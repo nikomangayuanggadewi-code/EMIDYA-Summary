@@ -133,15 +133,25 @@ app.use(express.json({
   limit: "1mb"
 }));
 
-if (process.env.NODE_ENV === "production" &&
-    !process.env.SESSION_SECRET) {
+// Nama variabel lama di Netlify tertulis "SESSION_SECREAT",
+// jadi keduanya diterima agar sesi login tetap stabil.
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || process.env.SESSION_SECREAT;
+
+if (!SESSION_SECRET) {
+  console.warn(
+    "SESSION_SECRET belum diatur. Sesi login akan hilang setiap server dimulai ulang."
+  );
+}
+
+if (process.env.NODE_ENV === "production" && !SESSION_SECRET) {
   throw new Error("SESSION_SECRET wajib diatur di environment.");
 }
 
 app.use(session({
   store: new PostgreSQLSessionStore(),
 
-  secret: process.env.SESSION_SECRET ||
+  secret: SESSION_SECRET ||
     crypto.randomBytes(32).toString("hex"),
 
   resave: false,
@@ -169,7 +179,9 @@ app.use(express.static(
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024
+    // Netlify Functions menerima body maksimal ~6 MB (setelah base64),
+    // jadi file dibatasi 4 MB.
+    fileSize: 4 * 1024 * 1024
   },
   fileFilter: (req, file, callback) => {
     const tipeDiizinkan = [
@@ -727,7 +739,7 @@ await pool.query(
 
       res.status(500).json({
         error: error.code === "LIMIT_FILE_SIZE"
-          ? "Ukuran file maksimal 10 MB."
+          ? "Ukuran file maksimal 4 MB."
           : "Server gagal memproses: " + error.message
       });
 
@@ -749,7 +761,7 @@ app.use((error, req, res, next) => {
 
   if (error.code === "LIMIT_FILE_SIZE") {
     return res.status(400).json({
-      error: "Ukuran file maksimal 10 MB."
+      error: "Ukuran file maksimal 4 MB."
     });
   }
 
