@@ -356,15 +356,6 @@
     }
 
 
-.account-bar button {
-  border: 1px solid var(--primary);
-  color: var(--primary-dark);
-  background: white;
-  padding: 7px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
     /* HASIL */
     .result {
       display: none;
@@ -759,6 +750,74 @@ footer p {
   padding-top: 15px;
   font-size: 12px;
 }
+
+/* Penghitung kata */
+.word-count {
+  margin-top: 7px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.word-count.over {
+  color: #b23b3b;
+  font-weight: bold;
+}
+
+/* Variasi pemberitahuan */
+.notice.success {
+  background: #eaf6ee;
+  color: #24613a;
+}
+
+.notice.error {
+  background: #fdecec;
+  color: #8a2c2c;
+}
+
+.auth-notice {
+  max-width: 520px;
+  margin: 18px auto 0;
+}
+
+.auth-notice a {
+  color: inherit;
+  font-weight: bold;
+}
+
+/* Kepala hasil + tombol salin */
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.result-header h2 {
+  margin-bottom: 0;
+}
+
+.copy-button {
+  border: 1px solid #cbd6e2;
+  background: #ffffff;
+  color: #365477;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.copy-button:hover {
+  background: #edf1f5;
+}
+
+.result-note {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
   </style>
 </head>
 
@@ -802,11 +861,8 @@ footer p {
       <p>
         Ubah materi panjang menjadi lebih mudah dipelajari.
       </p>
+      <div class="notice auth-notice" id="authNotice" role="status"></div>
     </section>
-
-  <div class="notice" id="authNotice" role="status"></div>
-</section>
-
 
     <section class="workspace container">
       <div class="workspace-heading">
@@ -818,13 +874,13 @@ footer p {
       </div>
 
       <div class="input-tabs">
-        <button class="tab active" data-panel="textPanel">
+        <button type="button" class="tab active" data-panel="textPanel" aria-pressed="true">
           📝 Teks
         </button>
-        <button class="tab" data-panel="pdfPanel">
+        <button type="button" class="tab" data-panel="pdfPanel" aria-pressed="false">
           📄 PDF
         </button>
-        <button class="tab" data-panel="photoPanel">
+        <button type="button" class="tab" data-panel="photoPanel" aria-pressed="false">
           🖼️ Foto
         </button>
       </div>
@@ -833,13 +889,14 @@ footer p {
         <textarea id="materi"
           placeholder="Tempelkan materi yang ingin kamu ringkas di sini..."
           aria-label="Materi yang ingin diringkas"></textarea>
+        <div class="word-count" id="wordCount">0 / 1.500 kata</div>
       </div>
 
       <div class="input-panel" id="pdfPanel">
         <div class="upload-area">
           <div class="upload-icon">📄</div>
           <h3>Unggah dokumen PDF</h3>
-          <p>Pilih file PDF dari perangkatmu.</p>
+          <p>Pilih file PDF berisi teks (bukan hasil scan), maksimal 4 MB.</p>
           <label class="file-label" for="pdfFile">Pilih File PDF</label>
           <input class="file-input" type="file" id="pdfFile"
             accept=".pdf,application/pdf">
@@ -851,10 +908,10 @@ footer p {
         <div class="upload-area">
           <div class="upload-icon">🖼️</div>
           <h3>Unggah foto catatan</h3>
-          <p>Pilih foto catatan atau materi belajar.</p>
+          <p>Format JPG, PNG, atau WEBP, maksimal 4 MB.</p>
           <label class="file-label" for="photoFile">Pilih Foto</label>
           <input class="file-input" type="file" id="photoFile"
-            accept="image/*">
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
           <div class="file-name" id="photoName"></div>
           <img class="preview-image" id="photoPreview" alt="Pratinjau foto catatan">
         </div>
@@ -879,42 +936,79 @@ footer p {
         </label>
       </div>
 
-      <button class="summarize-button" id="summarizeButton">
-         Ringkas Sekarang
+      <button type="button" class="summarize-button" id="summarizeButton">
+        ✨ Ringkas Sekarang
       </button>
 
       <div class="notice" id="notice" role="status"></div>
     </section>
 
-    <section class="result container" id="result">
-  <h2> Hasil Ringkasan</h2>
-  <div class="result-content" id="resultContent"></div>
-</section>
+    <section class="result container" id="result" aria-live="polite">
+      <div class="result-header">
+        <h2>Hasil Ringkasan</h2>
+        <button type="button" class="copy-button" id="copyButton">📋 Salin</button>
+      </div>
+      <div class="result-content" id="resultContent"></div>
+      <p class="result-note">
+        Periksa kembali ringkasan dengan materi aslimu, ya.
+      </p>
+    </section>
+  </main>
+
   <footer>
     <strong>© 2026 EMIDYA Summary</strong> — Teman Belajar Digital
   </footer>
 
- <script>
-  // SISTEM PEMERIKSAAN LOGIN
-let isLoggedIn = false;
+<script>
+const MAX_WORDS = 1500;
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
+const BUTTON_LABEL = "✨ Ringkas Sekarang";
 
-async function checkLogin() {
-  try {
-    const response = await fetch("/api/me", {
-      credentials: "same-origin"
-    });
+const notice = document.getElementById("notice");
+const authNotice = document.getElementById("authNotice");
+const result = document.getElementById("result");
+const resultContent = document.getElementById("resultContent");
+const button = document.getElementById("summarizeButton");
+const materiInput = document.getElementById("materi");
+const wordCount = document.getElementById("wordCount");
+const pdfFile = document.getElementById("pdfFile");
+const photoFile = document.getElementById("photoFile");
 
-    const data = await response.json();
-    isLoggedIn = data.authenticated === true;
-
-  } catch (error) {
-    console.error("Gagal memeriksa akun:", error);
-    isLoggedIn = false;
-  }
+function showNotice(message, type) {
+  notice.textContent = message;
+  notice.classList.remove("success", "error");
+  if (type) notice.classList.add(type);
+  notice.classList.add("show");
 }
 
-checkLogin();
+function hideNotice() {
+  notice.classList.remove("show", "success", "error");
+}
 
+// SISTEM PEMERIKSAAN LOGIN
+// Disimpan sebagai promise agar tombol menunggu hasil pemeriksaan
+// dan tidak langsung mengarahkan ke halaman login.
+const loginCheck = (async () => {
+  try {
+    const response = await fetch("/api/me", { credentials: "same-origin" });
+    const data = await response.json();
+    return data.authenticated === true;
+  } catch (error) {
+    console.error("Gagal memeriksa akun:", error);
+    return false;
+  }
+})();
+
+loginCheck.then(isLoggedIn => {
+  if (!isLoggedIn) {
+    authNotice.innerHTML =
+      'Kamu belum masuk. <a href="login.html">Masuk</a> atau ' +
+      '<a href="register.html">daftar</a> untuk mulai meringkas.';
+    authNotice.classList.add("show");
+  }
+});
+
+// Menu
 const menuButton = document.getElementById("menuButton");
 const menu = document.getElementById("menu");
 
@@ -923,38 +1017,76 @@ menuButton.addEventListener("click", () => {
   menuButton.setAttribute("aria-expanded", terbuka);
 });
 
+document.addEventListener("click", event => {
+  if (!menuButton.contains(event.target) && !menu.contains(event.target)) {
+    menu.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+});
+
 // Tab teks, PDF, dan foto
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(t =>
-      t.classList.remove("active")
-    );
+    document.querySelectorAll(".tab").forEach(t => {
+      t.classList.remove("active");
+      t.setAttribute("aria-pressed", "false");
+    });
 
     document.querySelectorAll(".input-panel").forEach(panel =>
       panel.classList.remove("active")
     );
 
     tab.classList.add("active");
+    tab.setAttribute("aria-pressed", "true");
     document.getElementById(tab.dataset.panel).classList.add("active");
+    hideNotice();
   });
 });
 
-const pdfFile = document.getElementById("pdfFile");
-const photoFile = document.getElementById("photoFile");
+// Penghitung kata
+function countWords(text) {
+  return text.split(/\s+/).filter(Boolean).length;
+}
 
-pdfFile.addEventListener("change", () => {
-  document.getElementById("pdfName").textContent =
-    pdfFile.files[0]?.name || "";
+materiInput.addEventListener("input", () => {
+  const jumlah = countWords(materiInput.value);
+  wordCount.textContent =
+    `${jumlah.toLocaleString("id-ID")} / ${MAX_WORDS.toLocaleString("id-ID")} kata`;
+  wordCount.classList.toggle("over", jumlah > MAX_WORDS);
 });
 
-photoFile.addEventListener("change", () => {
-  const file = photoFile.files[0];
-  document.getElementById("photoName").textContent = file?.name || "";
+// Pilih file
+function validateFile(input, nameEl) {
+  const file = input.files[0];
+  if (file && file.size > MAX_FILE_SIZE) {
+    showNotice("Ukuran file maksimal 4 MB. Pilih file yang lebih kecil.", "error");
+    input.value = "";
+    nameEl.textContent = "";
+    return null;
+  }
+  hideNotice();
+  nameEl.textContent = file?.name || "";
+  return file || null;
+}
 
+pdfFile.addEventListener("change", () => {
+  validateFile(pdfFile, document.getElementById("pdfName"));
+});
+
+let previewUrl = null;
+
+photoFile.addEventListener("change", () => {
+  const file = validateFile(photoFile, document.getElementById("photoName"));
   const preview = document.getElementById("photoPreview");
 
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
+
   if (file) {
-    preview.src = URL.createObjectURL(file);
+    previewUrl = URL.createObjectURL(file);
+    preview.src = previewUrl;
     preview.style.display = "block";
   } else {
     preview.removeAttribute("src");
@@ -962,112 +1094,115 @@ photoFile.addEventListener("change", () => {
   }
 });
 
+// Salin hasil
+document.getElementById("copyButton").addEventListener("click", async () => {
+  const copyButton = document.getElementById("copyButton");
+  try {
+    await navigator.clipboard.writeText(resultContent.textContent);
+    copyButton.textContent = "✅ Tersalin";
+  } catch (error) {
+    copyButton.textContent = "Gagal menyalin";
+  }
+  setTimeout(() => { copyButton.textContent = "📋 Salin"; }, 2000);
+});
+
+const usageLabel = { text: "teks", pdf: "PDF", photo: "foto" };
+
 // Tombol ringkas
-document.getElementById("summarizeButton")
-  .addEventListener("click", async () => {
-if (!isLoggedIn) {
-  window.location.href = "login.html";
-  return;
-}
-    const materi = document.getElementById("materi").value.trim();
-    const notice = document.getElementById("notice");
-    const result = document.getElementById("result");
-    const resultContent = document.getElementById("resultContent");
-    const button = document.getElementById("summarizeButton");
+button.addEventListener("click", async () => {
+  const isLoggedIn = await loginCheck;
 
-    const panelAktif = document.querySelector(".input-panel.active");
-    const jenis = panelAktif?.id;
-
-    const formData = new FormData();
-
-    formData.append(
-      "panjang",
-      document.getElementById("summaryLength").value
-    );
-
-    formData.append(
-      "bentuk",
-      document.getElementById("summaryFormat").value
-    );
-
-    if (jenis === "textPanel") {
-      if (!materi) {
-        notice.textContent = "Masukkan materi teks terlebih dahulu.";
-        notice.classList.add("show");
-        return;
-      }
-
-      formData.append("materi", materi);
-
-    } else if (jenis === "pdfPanel") {
-      if (!pdfFile.files[0]) {
-        notice.textContent = "Pilih file PDF terlebih dahulu.";
-        notice.classList.add("show");
-        return;
-      }
-
-      formData.append("file", pdfFile.files[0]);
-
-    } else if (jenis === "photoPanel") {
-      if (!photoFile.files[0]) {
-        notice.textContent = "Pilih foto terlebih dahulu.";
-        notice.classList.add("show");
-        return;
-      }
-
-      formData.append("file", photoFile.files[0]);
-    }
-
-    button.disabled = true;
-    button.textContent = "⏳ Sedang meringkas...";
-    notice.classList.remove("show");
-    result.classList.remove("show");
-   result.style.display = "none";
-
-try {
-
-  const response = await fetch("/api/ringkas", {
-    method: "POST",
-    body: formData,
-    credentials: "same-origin"
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || "Ringkasan gagal dibuat.");
+  if (!isLoggedIn) {
+    window.location.href = "login.html";
+    return;
   }
 
-  resultContent.textContent = data.ringkasan;
-  result.classList.add("show");
-  result.style.display = "block";
-  notice.textContent = "Ringkasan berhasil dibuat!";
-  notice.classList.add("show");
+  const materi = materiInput.value.trim();
+  const jenis = document.querySelector(".input-panel.active")?.id;
+  const formData = new FormData();
 
-  result.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-  
-      resultContent.textContent = data.ringkasan;
-      result.classList.add("show");
-      result.style.display = "block";
-      notice.textContent = "Ringkasan berhasil dibuat!";
-      notice.classList.add("show");
+  formData.append("panjang", document.getElementById("summaryLength").value);
+  formData.append("bentuk", document.getElementById("summaryFormat").value);
 
-      result.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-    } catch (error) {
-      notice.textContent = "Gagal meringkas: " + error.message;
-      notice.classList.add("show");
-
-    } finally {
-      button.disabled = false;
-      button.textContent = "✨ Ringkas Sekarang";
+  if (jenis === "textPanel") {
+    if (!materi) {
+      showNotice("Masukkan materi teks terlebih dahulu.", "error");
+      return;
     }
-  });
+    if (countWords(materi) > MAX_WORDS) {
+      showNotice("Maksimal 1.500 kata untuk ringkasan teks.", "error");
+      return;
+    }
+    formData.append("materi", materi);
+
+  } else if (jenis === "pdfPanel") {
+    if (!pdfFile.files[0]) {
+      showNotice("Pilih file PDF terlebih dahulu.", "error");
+      return;
+    }
+    formData.append("file", pdfFile.files[0]);
+
+  } else if (jenis === "photoPanel") {
+    if (!photoFile.files[0]) {
+      showNotice("Pilih foto terlebih dahulu.", "error");
+      return;
+    }
+    formData.append("file", photoFile.files[0]);
+  }
+
+  button.disabled = true;
+  button.textContent = "⏳ Sedang meringkas...";
+  hideNotice();
+  result.classList.remove("show");
+
+  try {
+    const response = await fetch("/api/ringkas", {
+      method: "POST",
+      body: formData,
+      credentials: "same-origin"
+    });
+
+    // Server bisa saja membalas dengan non-JSON (misalnya batas waktu habis)
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      data = {};
+    }
+
+    if (response.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        (response.status === 413
+          ? "Ukuran file terlalu besar."
+          : "Server sedang sibuk, coba lagi sebentar lagi.")
+      );
+    }
+
+    resultContent.textContent = data.ringkasan;
+    result.classList.add("show");
+
+    let pesan = "Ringkasan berhasil dibuat!";
+    if (data.usage && typeof data.usage.remaining === "number") {
+      pesan += ` Sisa kuota ${usageLabel[data.usage.type] || data.usage.type} hari ini: ${Math.max(0, data.usage.remaining)}.`;
+    }
+    showNotice(pesan, "success");
+
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  } catch (error) {
+    showNotice("Gagal meringkas: " + error.message, "error");
+
+  } finally {
+    button.disabled = false;
+    button.textContent = BUTTON_LABEL;
+  }
+});
 </script>
+</body>
 </html>
