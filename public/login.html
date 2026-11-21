@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Ringkas Yuk!</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  background: #f4f7fc;
+}
+
+.left {
+  width: 50%;
+  background: linear-gradient(135deg, #294778, #4569a8);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  text-align: center;
+}
+
+.left h1 {
+  font-size: 38px;
+  margin-bottom: 20px;
+}
+
+.left p {
+  line-height: 1.7;
+  max-width: 380px;
+}
+
+.illustration {
+  font-size: 100px;
+  margin-bottom: 30px;
+}
+
+.right {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-box h2 {
+  color: #294778;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #777;
+  margin-bottom: 30px;
+}
+
+label {
+  display: block;
+  margin: 18px 0 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d5dce8;
+  border-radius: 8px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #4569a8;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 25px;
+  border: none;
+  border-radius: 8px;
+  background: #4569a8;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #294778;
+}
+
+#pesan {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #d33;
+}
+
+.daftar {
+  text-align: center;
+  margin-top: 25px;
+  color: #666;
+}
+
+a {
+  color: #4569a8;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@media (max-width: 750px) {
+  body {
+    flex-direction: column;
+  }
+
+  .left, .right {
+    width: 100%;
+  }
+
+  .left {
+    min-height: 220px;
+    padding: 30px;
+  }
+
+  .left h1 {
+    font-size: 27px;
+  }
+
+  .illustration {
+    font-size: 55px;
+    margin-bottom: 10px;
+  }
+
+  .right {
+    flex: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<section class="left">
+  <div class="illustration">📚</div>
+  <h1>EMIDYA Summary</h1>
+  <p>
+    Belajar lebih mudah, cepat, dan praktis.
+    Ringkas materi pelajaranmu dengan bantuan
+    kecerdasan buatan.
+  </p>
+</section>
+
+<section class="right">
+  <div class="login-box">
+
+    <h2>Selamat Datang!</h2>
+    <p class="subtitle">Masuk ke akun Ringkas Yuk kamu.</p>
+
+    <form id="loginForm">
+
+      <label>Email</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Masukkan email"
+        required
+      >
+
+      <label>Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Masukkan password"
+        required
+      >
+
+      <button type="submit" id="loginButton">
+        Masuk
+      </button>
+
+      <p id="pesan"></p>
+
+    </form>
+
+    <p class="daftar">
+      Belum punya akun?
+      <a href="register.html">Daftar sekarang</a>
+    </p>
+
+  </div>
+</section>
+
+<script>
+document.getElementById("loginForm")
+.addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const pesan = document.getElementById("pesan");
+  const tombol = document.getElementById("loginButton");
+
+  tombol.disabled = true;
+  tombol.textContent = "Memproses...";
+  pesan.textContent = "";
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Login gagal.");
+    }
+
+    window.location.href = "beranda.html";
+
+  } catch (error) {
+    pesan.textContent = error.message;
+  } finally {
+    tombol.disabled = false;
+    tombol.textContent = "Masuk";
+  }
+
+});
+</script>
+
+</body>
+</html>

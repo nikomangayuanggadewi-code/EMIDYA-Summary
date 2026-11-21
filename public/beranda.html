@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beranda - EMIDYA Summary </title>
+
+  <style>
+    /* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f7f9;
+  color: #344255;
+  line-height: 1.7;
+}
+
+/* HEADER */
+header {
+  background: #ffffff;
+  padding: 16px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #e7ebf0;
+  flex-wrap: wrap;
+}
+
+.logo {
+  color: #365477;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: #586779;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+nav a:hover,
+nav a.active {
+  color: #365477;
+}
+
+/* HERO */
+.hero {
+  padding: 65px 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+  background: #edf1f5;
+}
+
+.hero-text {
+  flex: 1;
+}
+
+.tag {
+  display: inline-block;
+  background: #dce5ee;
+  color: #405d7b;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+h1 {
+  color: #304d6c;
+  font-size: clamp(30px, 5vw, 45px);
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+
+.hero-text p {
+  max-width: 520px;
+  color: #647184;
+  margin-bottom: 25px;
+}
+
+/* BUTTON */
+.main-button {
+  display: inline-block;
+  background: #405f80;
+  color: white;
+  text-decoration: none;
+  padding: 12px 23px;
+  border-radius: 7px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.main-button:hover {
+  background: #304a67;
+}
+
+/* HERO ILLUSTRATION */
+.hero-art {
+  flex: 0 1 300px;
+  min-width: 230px;
+  min-height: 250px;
+  background: #dce5ed;
+  border: 1px solid #d0dbe5;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+}
+
+.book {
+  font-size: 95px;
+  line-height: 1.4;
+}
+
+.note {
+  background: white;
+  color: #405f80;
+  padding: 10px 18px;
+  border-radius: 7px;
+  font-weight: bold;
+  border: 1px solid #e2e7ed;
+}
+
+/* GENERAL SECTION */
+section {
+  padding: 55px 7%;
+}
+
+.section-title {
+  text-align: center;
+  color: #304d6c;
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+.section-description {
+  max-width: 650px;
+  text-align: center;
+  margin: 0 auto 30px;
+  color: #697789;
+}
+
+/* ABOUT */
+.about-box {
+  background: white;
+  padding: 27px;
+  border-radius: 12px;
+  border: 1px solid #e4e8ed;
+  max-width: 850px;
+  margin: auto;
+}
+
+.about-box p + p {
+  margin-top: 12px;
+}
+
+/* FEATURE CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 25px 20px;
+  border-radius: 12px;
+  border: 1px solid #e4e8ed;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.card-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 15px;
+  border-radius: 12px;
+  background: #edf1f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+}
+
+.card h3 {
+  color: #405f80;
+  margin-bottom: 9px;
+  font-size: 18px;
+}
+
+.card p {
+  color: #697789;
+  font-size: 14px;
+}
+
+/* STEPS */
+.steps {
+  max-width: 800px;
+  margin: auto;
+  display: grid;
+  gap: 15px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #e4e8ed;
+}
+
+.number {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6ecf2;
+  color: #405f80;
+  font-weight: bold;
+}
+
+.step h3 {
+  color: #405f80;
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+.step p {
+  color: #697789;
+  font-size: 14px;
+}
+
+/* CTA */
+.cta {
+  text-align: center;
+  margin: 0 7% 55px;
+  padding: 40px 20px;
+  background: #e9eef3;
+  border: 1px solid #dfe6ed;
+  border-radius: 14px;
+}
+
+.cta h2 {
+  color: #304d6c;
+  margin-bottom: 10px;
+}
+
+.cta p {
+  color: #647184;
+  margin-bottom: 22px;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 22px;
+  background: white;
+  color: #7a8795;
+  font-size: 13px;
+  border-top: 1px solid #e4e8ed;
+}
+
+/* ACCOUNT */
+.account-area {
+  position: relative;
+}
+
+.account-button {
+  background: #edf1f5;
+  color: #405f80;
+  border: 1px solid #dfe6ed;
+  padding: 10px 15px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.account-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 48px;
+  width: 230px;
+  padding: 18px;
+  background: white;
+  border: 1px solid #e4e8ed;
+  border-radius: 10px;
+  box-shadow: 0 5px 18px rgba(40, 55, 75, 0.08);
+  z-index: 100;
+}
+
+.account-dropdown.show {
+  display: block;
+}
+
+.account-dropdown p {
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+#userEmail {
+  font-size: 13px;
+  color: #697789;
+}
+
+.account-status {
+  color: #405f80;
+  font-size: 14px;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 10px;
+  background: #f5eeee;
+  color: #a34c4c;
+  border: 1px solid #eadede;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  header {
+    padding: 15px 5%;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  nav {
+    gap: 12px;
+  }
+
+  nav a {
+    font-size: 12px;
+  }
+
+  .hero {
+    padding: 42px 6%;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-text p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-art {
+    width: 100%;
+    max-width: 280px;
+    min-height: 210px;
+  }
+
+  .book {
+    font-size: 75px;
+  }
+
+  section {
+    padding: 42px 6%;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .cta {
+    margin: 0 6% 40px;
+  }
+
+  .account-area {
+    width: 100%;
+  }
+
+  .account-dropdown {
+    left: 0;
+    right: auto;
+  }
+}
+.card-icon {
+  color: #405f80;
+  background: #edf1f5;
+  border: 1px solid #e3e9ef;
+}
+/* HAMBURGER MENU */
+.menu-toggle {
+  width: 42px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: #edf1f5;
+  border: 1px solid #dfe6ed;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  width: 19px;
+  height: 2px;
+  background: #405f80;
+  border-radius: 3px;
+}
+
+.main-nav {
+  display: none;
+  position: absolute;
+  top: 75px;
+  right: 7%;
+  flex-direction: column;
+  gap: 0;
+  width: 190px;
+  background: white;
+  border: 1px solid #e4e8ed;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(40,55,75,.10);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.main-nav.show {
+  display: flex;
+}
+
+.main-nav a {
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #586779;
+  font-size: 14px;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  background: #edf1f5;
+  color: #365477;
+}
+
+header {
+  position: relative;
+}
+
+@media (max-width: 700px) {
+  .main-nav {
+    right: 5%;
+    top: 65px;
+  }
+}
+/* POSISI HEADER DAN HAMBURGER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.logo {
+  margin-right: auto;
+}
+
+.menu-toggle {
+  order: 2;
+  margin-left: auto;
+}
+
+.account-area {
+  order: 3;
+  margin-left: 12px;
+}
+
+/* MENU DROPDOWN DI POJOK KANAN */
+.main-nav {
+  right: 7%;
+  left: auto;
+}
+
+@media (max-width: 700px) {
+  .menu-toggle {
+    margin-left: auto;
+  }
+
+  .account-area {
+    width: auto;
+    margin-left: 8px;
+  }
+
+  .main-nav {
+    right: 5%;
+  }
+}
+  </style>
+</head>
+
+
+<body>
+
+  <header>
+    <div class="logo">📘 EMIDYA Summary </div>
+
+  <button class="menu-toggle" id="menuToggle"
+        aria-label="Buka menu"
+        aria-expanded="false">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<nav class="main-nav" id="mainNav">
+  <a href="./beranda.html" class="active">Beranda</a>
+  <a href="./index.html">Ringkas Materi</a>
+  <a href="./tentang.html">Tentang Kami</a>
+</nav>
+
+<div class="account-area">
+  <button id="accountButton" class="account-button">
+    👤 Akun Saya ▾
+  </button>
+
+  <div id="accountDropdown" class="account-dropdown">
+    <p><strong>Akun Saya</strong></p>
+    <p id="userEmail">Memuat email...</p>
+    <p class="account-status">Paket: Gratis</p>
+    <button id="logoutButton" class="logout-button">
+      Keluar
+    </button>
+  </div>
+</div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-text">
+    
+
+        <h1>Bacaan Panjang?<br>EMIDYA Summary</h1>
+
+        <p>
+          Ubah materi yang panjang menjadi ringkasan yang lebih singkat,
+          jelas, dan mudah dipahami. Belajar jadi lebih praktis tanpa
+          harus bingung mencari inti pembahasan.
+        </p>
+
+        <a href="./index.html" class="main-button">
+          Mulai Ringkas Materi →
+        </a>
+      </div>
+
+      <div class="hero-art">
+        <div class="book">📚</div>
+        <div class="note">Belajar lebih praktis!</div>
+      </div>
+    </div>
+
+    <section>
+      <h2 class="section-title">Apa Itu EMIDYA Summary?</h2>
+
+      <p class="section-description">
+        Teman belajar digital yang membantu kamu memahami materi
+        dengan cara yang lebih sederhana.
+      </p>
+
+      <div class="about-box">
+        <p>
+          <strong>EMIDYA Summary</strong> adalah website yang dirancang
+          untuk membantu pelajar dan mahasiswa memahami materi belajar
+          yang panjang dengan lebih mudah.
+        </p>
+
+        <p>
+          Melalui fitur ringkasan berbantuan AI, pengguna dapat memasukkan
+          teks materi untuk mendapatkan ringkasan yang lebih singkat dan
+          berfokus pada poin-poin penting.
+        </p>
+
+        <p>
+          Ringkasan tetap perlu diperiksa kembali agar sesuai dengan
+          materi asli dan tidak menghilangkan informasi penting.
+        </p>
+      </div>
+    </section>
+
+    <section style="background: #edf7ff;">
+      <h2 class="section-title">Kenapa Menggunakan EMIDYA Summary?</h2>
+
+      <p class="section-description">
+        Dirancang untuk membuat kegiatan belajar terasa lebih praktis.
+      </p>
+
+      <div class="cards">
+        <div class="card">
+         <div class="card-icon">
+  <svg viewBox="0 0 48 48" width="34" height="34"
+       fill="none" stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="24" cy="25" r="17"/>
+    <path d="M24 15V25L31 29M19 4H29M24 4V8"/>
+  </svg>
+</div>
+          <h3>Lebih Hemat Waktu</h3>
+          <p>
+            Membantu menemukan inti materi tanpa harus membaca
+            ulang seluruh teks berkali-kali.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">💡</div>
+          <h3>Mudah Dipahami</h3>
+          <p>
+            Menyajikan materi dalam bentuk yang lebih ringkas
+            sehingga lebih mudah dipelajari kembali.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📝</div>
+          <h3>Membantu Belajar</h3>
+          <p>
+            Bisa digunakan sebagai bahan awal untuk membuat
+            catatan dan mengulang pelajaran.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Bagaimana Cara Menggunakannya?</h2>
+
+      <p class="section-description">
+        Ikuti langkah sederhana berikut untuk mulai membuat ringkasan.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="number">1</div>
+          <div>
+            <h3>Buka Halaman Ringkas Materi</h3>
+            <p>
+              Klik tombol “Mulai Ringkas Materi” untuk menuju
+              halaman peringkasan.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="number">2</div>
+          <div>
+            <h3>Masukkan Materi</h3>
+            <p>
+              Salin dan tempel teks pelajaran atau bacaan yang
+              ingin kamu ringkas.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="number">3</div>
+          <div>
+            <h3>Buat Ringkasan</h3>
+            <p>
+              Gunakan fitur ringkasan yang tersedia, lalu baca
+              kembali hasilnya untuk memastikan ketepatannya.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta">
+      <h2>Siap Belajar Lebih Praktis? 💙</h2>
+      <p>
+        Yuk, mulai ubah materi panjang menjadi ringkasan yang lebih mudah dipahami.
+      </p>
+
+      <a href="./index.html" class="main-button">
+        Coba Sekarang
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 EMIDYA Summary — Teman Belajar Digital
+  </footer>
+  
+<script>
+const accountButton = document.getElementById("accountButton");
+const accountDropdown = document.getElementById("accountDropdown");
+
+accountButton.addEventListener("click", () => {
+  accountDropdown.classList.toggle("show");
+});
+
+// Ambil informasi akun
+async function loadAccount() {
+  try {
+    const response = await fetch("/api/me", {
+      credentials: "same-origin"
+    });
+
+    const data = await response.json();
+
+    if (!data.authenticated) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    document.getElementById("userEmail").textContent =
+      data.user.email;
+
+  } catch (error) {
+    console.error("Gagal memuat akun:", error);
+  }
+}
+
+loadAccount();
+
+// Logout
+document.getElementById("logoutButton")
+.addEventListener("click", async () => {
+  try {
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (!response.ok) {
+      throw new Error("Gagal keluar dari akun.");
+    }
+
+    window.location.href = "index.html";
+
+  } catch (error) {
+    alert(error.message);
+  }
+}); 
+const menuToggle = document.getElementById("menuToggle");
+const mainNav = document.getElementById("mainNav");
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = mainNav.classList.toggle("show");
+
+  menuToggle.setAttribute("aria-expanded", isOpen);
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    !menuToggle.contains(event.target) &&
+    !mainNav.contains(event.target)
+  ) {
+    mainNav.classList.remove("show");
+    menuToggle.setAttribute("aria-expanded", "false");
+  }
+});
+
+</script>
+
+</body>
+</html>

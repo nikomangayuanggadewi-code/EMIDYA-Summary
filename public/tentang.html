@@ -1,0 +1,646 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Kami - EMIDYA Summary</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f9ff;
+      color: #283b50;
+      line-height: 1.7;
+    }
+
+    header {
+      background: white;
+      padding: 17px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 3px 12px #dceaf7;
+    }
+
+    .logo {
+      color: #247dcc;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      gap: 17px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #53677c;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #247dcc;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 48px 6% 38px;
+      background: linear-gradient(135deg, #e3f2ff, #f8fbff);
+    }
+
+    .hero-icon {
+      font-size: 55px;
+      margin-bottom: 10px;
+    }
+
+    h1, h2 {
+      color: #176bb2;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 38px);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: auto;
+      color: #5c7186;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px 6% 50px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .about {
+      background: white;
+      border: 1px solid #e0edf9;
+      border-radius: 17px;
+      padding: 23px;
+      margin-bottom: 35px;
+      box-shadow: 0 5px 18px #e5eff8;
+    }
+
+    .about p + p {
+      margin-top: 10px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+      margin-bottom: 35px;
+    }
+
+    .feature {
+      background: white;
+      padding: 21px;
+      border-radius: 16px;
+      border: 1px solid #deebf8;
+    }
+
+    .feature-icon {
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e5f3ff;
+      border-radius: 14px;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .feature h3 {
+      color: #247dcc;
+      margin-bottom: 7px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      color: #65798d;
+      font-size: 14px;
+    }
+
+    .upload-section {
+      background: white;
+      border: 1px solid #d9eafb;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 6px 20px #e3eef9;
+    }
+
+    .upload-section > p {
+      color: #65798d;
+      margin-bottom: 18px;
+    }
+
+    .drop-area {
+      display: block;
+      text-align: center;
+      padding: 28px 15px;
+      border: 2px dashed #8dc5f2;
+      border-radius: 15px;
+      background: #f5faff;
+      cursor: pointer;
+    }
+
+    .drop-area:hover {
+      background: #eaf5ff;
+    }
+
+    .upload-icon {
+      font-size: 43px;
+      margin-bottom: 8px;
+    }
+
+    .drop-area strong {
+      display: block;
+      color: #247dcc;
+      margin-bottom: 5px;
+    }
+
+    .drop-area small {
+      color: #73869a;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    #fileName {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #247dcc;
+      overflow-wrap: anywhere;
+    }
+
+    .button {
+      display: inline-block;
+      border: none;
+      border-radius: 10px;
+      background: #2788d9;
+      color: white;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      margin-top: 17px;
+    }
+
+    .button:hover {
+      background: #176bb2;
+    }
+
+    .button:disabled {
+      background: #a9cbe8;
+      cursor: not-allowed;
+    }
+
+    .secondary-button {
+      background: #e6f2ff;
+      color: #176bb2;
+      margin-left: 5px;
+    }
+
+    .secondary-button:hover {
+      background: #d2e9ff;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 13px;
+      background: #fff8e7;
+      color: #805e1a;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    #result {
+      display: none;
+      margin-top: 20px;
+      padding: 17px;
+      border-radius: 12px;
+      background: #f0f8ff;
+      border: 1px solid #cfe6fb;
+      overflow-wrap: anywhere;
+    }
+
+    #result h3 {
+      color: #176bb2;
+      margin-bottom: 8px;
+    }
+
+    #previewImage {
+      display: none;
+      max-width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #247dcc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer {
+      background: white;
+      border-top: 1px solid #e0edf9;
+      text-align: center;
+      padding: 22px 6%;
+      color: #75879a;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+
+      .upload-section {
+        padding: 18px;
+      }
+    }
+    /* ===== DESAIN FORMAL EMIDYA SUMMARY ===== */
+
+body {
+  background: #f6f7f9;
+  color: #344255;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e7ed;
+  box-shadow: 0 2px 10px rgba(40, 55, 75, 0.03);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1120px;
+  min-height: 78px;
+  padding: 14px 24px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: #365477;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.logo-icon {
+  width: 38px;
+  height: 38px;
+  color: #405f80;
+  flex-shrink: 0;
+}
+
+.logo-subtitle {
+  color: #718196;
+  font-weight: 400;
+}
+
+/* HAMBURGER */
+.menu-button {
+  width: 42px;
+  height: 40px;
+  border: 1px solid #dfe6ed;
+  border-radius: 8px;
+  background: #edf1f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.menu-button span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  min-height: 2px;
+  background-color: #405f80;
+  border-radius: 3px;
+  opacity: 1;
+}
+/* MENU DROPDOWN */
+.menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: max(18px, calc((100% - 1072px) / 2));
+  width: 205px;
+  padding: 8px;
+  flex-direction: column;
+  gap: 3px;
+  background: #ffffff;
+  border: 1px solid #e2e7ed;
+  border-radius: 11px;
+  box-shadow: 0 8px 24px rgba(40, 55, 75, 0.12);
+}
+
+.menu.open {
+  display: flex;
+}
+
+.menu a {
+  padding: 11px 13px;
+  border-radius: 7px;
+  color: #586779;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.menu a:hover,
+.menu a.active {
+  background: #edf1f5;
+  color: #365477;
+}
+
+/* HERO */
+.hero {
+  background: #edf1f5;
+  padding: 52px 6% 42px;
+}
+
+.hero-icon {
+  font-size: 43px;
+  margin-bottom: 12px;
+}
+
+h1, h2 {
+  color: #304b68;
+}
+
+/* KONTEN */
+main {
+  max-width: 900px;
+  padding-top: 35px;
+}
+
+.about {
+  border: 1px solid #e2e7ed;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(40, 55, 75, 0.04);
+  padding: 25px;
+}
+
+.section-title {
+  color: #365477;
+  font-size: 22px;
+}
+
+/* KARTU FITUR */
+.feature {
+  background: #ffffff;
+  border: 1px solid #e2e7ed;
+  border-radius: 13px;
+  box-shadow: 0 3px 12px rgba(40, 55, 75, 0.025);
+  padding: 22px;
+}
+
+.feature-icon {
+  background: #edf1f5;
+  color: #405f80;
+  border-radius: 11px;
+}
+
+.feature h3 {
+  color: #365477;
+}
+
+.feature p {
+  color: #788596;
+}
+
+.back-link {
+  color: #405f80;
+  font-size: 14px;
+}
+
+/* FOOTER */
+footer {
+  background: #ffffff;
+  border-top: 1px solid #e2e7ed;
+  padding: 25px 20px;
+  color: #788596;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .header-inner {
+    min-height: 70px;
+    padding: 12px 18px;
+  }
+
+  .logo {
+    font-size: 19px;
+  }
+
+  .logo-icon {
+    width: 33px;
+    height: 33px;
+  }
+
+  .menu {
+    right: 15px;
+    width: 195px;
+  }
+
+  .hero {
+    padding: 38px 5% 30px;
+  }
+
+  main {
+    padding-top: 25px;
+  }
+}
+.site-header {
+  display: block;
+}
+ 
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+  <div class="header-inner">
+
+    <a href="./beranda.html" class="logo">
+      <span>📘</span>
+      EMIDYA Summary
+    </a>
+
+    <button
+      class="menu-button"
+      id="menuButton"
+      aria-label="Buka menu"
+      aria-expanded="false"
+      type="button"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+
+  <nav class="menu" id="menu">
+    <a href="./beranda.html">Beranda</a>
+    <a href="./index.html">Ringkas Materi</a>
+    <a href="./tentang.html" class="active">Tentang Kami</a>
+  </nav>
+</header>
+
+  <section class="hero">
+    <div class="hero-icon">📚</div>
+    <h1>Kenali EMIDYA Summary</h1>
+    <p>
+      Teman belajar digital yang membantu kamu memahami materi
+      dengan lebih praktis, terstruktur, dan mudah dipelajari.
+    </p>
+  </section>
+
+  <main>
+    <section class="about">
+      <h2 class="section-title">Tentang Kami</h2>
+      <p>
+        EMIDYA Summary merupakan website yang dirancang untuk membantu
+        pelajar dan mahasiswa menghadapi materi pembelajaran yang panjang.
+      </p>
+      <p>
+        Kami ingin membuat proses belajar lebih praktis dengan
+        menyediakan berbagai fitur untuk membantu pengguna memahami
+        inti materi tanpa mengabaikan informasi penting.
+      </p>
+    </section>
+
+    <h2 class="section-title">Fitur EMIDYA Summary</h2>
+
+    <div class="features">
+      <article class="feature">
+        <div class="feature-icon">📝</div>
+        <h3>Ringkas Materi</h3>
+        <p>
+          Masukkan teks materi dan gunakan halaman Ringkas Materi
+          untuk membuat ringkasan.
+        </p>
+        <a class="back-link" href="./index.html">Buka Ringkas Materi →</a>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon">📄</div>
+        <h3>Ringkas PDF</h3>
+        <p>
+          Unggah dokumen PDF dari perangkatmu sebagai langkah awal
+          untuk menyiapkan materi yang ingin diringkas.
+        </p>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon">🖼️</div>
+        <h3>Foto Ringkas</h3>
+        <p>
+          Unggah foto catatan, halaman buku, atau materi belajar
+          untuk menyiapkan gambar yang ingin diringkas.
+        </p>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon">💡</div>
+        <h3>Belajar Lebih Praktis</h3>
+        <p>
+          Gunakan hasil ringkasan sebagai bahan belajar tambahan
+          dan periksa kembali kesesuaiannya dengan materi asli.
+        </p>
+      </article>
+   </div>
+  </main>
+
+  <footer>
+    <strong> © 2026 EMIDYA Summary</strong>-Teman Belajar Digital
+  </footer>
+
+  <script>
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+
+menuButton.addEventListener("click", () => {
+  const isOpen = menu.classList.toggle("open");
+
+  menuButton.setAttribute("aria-expanded", isOpen);
+});
+
+document.addEventListener("click", (event) => {
+  if (
+    !menuButton.contains(event.target) &&
+    !menu.contains(event.target)
+  ) {
+    menu.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+});
+  </script>
+
+</body>
+</html>
